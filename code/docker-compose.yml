@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+
+  # Consul for Service Discovery
+  consul1: &consul
+    image: consul:latest
+    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+  consul2:
+    <<: *consul
+  consul3:
+    <<: *consul
+
