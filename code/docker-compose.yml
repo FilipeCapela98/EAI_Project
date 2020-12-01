@@ -17,7 +17,7 @@ services:
     image: vromero/activemq-artemis
     ports:
       - '8161:8161'
-      - '61616:61616'
+      - '61616'
     environment:
       - 'ARTEMIS_USERNAME=admin'
       - 'ARTEMIS_PASSWORD=admin'
@@ -28,6 +28,10 @@ services:
       - '8080:8080'
 
   twitter-streaming-service:
+    image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
+  twitter-streaming-service2:
+    image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
+  twitter-streaming-service3:
     image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
 
   image-preprocessing-service:
