@@ -1,4 +1,4 @@
-package nl.rug.eai.imagestream.streammanagementservice.gateway;
+package nl.rug.eai.imagestream.streammanagementservice.gateway.senders;
 
 import nl.rug.eai.imagestream.commons.model.StartCommand;
 import org.springframework.beans.factory.annotation.Autowired;
