@@ -1,7 +1,8 @@
-package nl.rug.eai.imagestream.twitterstreamingservice.gateway;
+package nl.rug.eai.imagestream.twitterstreamingservice.gateway.receivers;
 
 import nl.rug.eai.imagestream.commons.model.StartCommand;
 import nl.rug.eai.imagestream.twitterstreamingservice.controller.StreamController;
+import nl.rug.eai.imagestream.twitterstreamingservice.controller.handlers.StartCommandHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Component;
 public class StartCommandReceiver {
 
     @Autowired
-    StreamController streamController;
+    StartCommandHandler startCommandHandler;
 
     @JmsListener(destination = "streaming-service-commands")
     public void receiveStartCommand(StartCommand startCommand) {
-        this.streamController.start(startCommand.getTopic());
+        this.startCommandHandler.handle(startCommand);
     }
 
 }
