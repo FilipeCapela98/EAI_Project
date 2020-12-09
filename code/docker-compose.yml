@@ -26,19 +26,25 @@ services:
     image: docker.io/library/stream-management-service:0.0.1-SNAPSHOT
     ports:
       - '8080:8080'
+    depends_on:
+      - activemq-artemis
 
   twitter-streaming-service:
     image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
-  twitter-streaming-service2:
-    image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
-  twitter-streaming-service3:
-    image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
 
   image-preprocessing-service:
     image: docker.io/library/image-preprocessing-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
 
   image-analyzer-service:
     image: docker.io/library/image-analyzer-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
 
   database-adapter-service:
     image: docker.io/library/database-adapter-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
