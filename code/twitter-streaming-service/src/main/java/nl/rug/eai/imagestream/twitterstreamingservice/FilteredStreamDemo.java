@@ -1,5 +1,6 @@
 package nl.rug.eai.imagestream.twitterstreamingservice;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -42,13 +43,13 @@ public class FilteredStreamDemo {
      * This method calls the filtered stream endpoint and streams Tweets from it
      * */
     private static void connectStream(String bearerToken) throws IOException, URISyntaxException {
-
+        // ObjectMapper objectMapper = new ObjectMapper();
         HttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setCookieSpec(CookieSpecs.STANDARD).build())
                 .build();
 
-        URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/stream");
+        URIBuilder uriBuilder = new URIBuilder("https://api.twitter.com/2/tweets/search/stream?expansions=attachments.media_keys&media.fields=preview_image_url,url");
 
         HttpGet httpGet = new HttpGet(uriBuilder.build());
         httpGet.setHeader("Authorization", String.format("Bearer %s", bearerToken));
@@ -59,6 +60,7 @@ public class FilteredStreamDemo {
             BufferedReader reader = new BufferedReader(new InputStreamReader((entity.getContent())));
             String line = reader.readLine();
             while (line != null) {
+                // Tweet tweet = objectMapper.readValue(line, Tweet.class);
                 System.out.println(line);
                 line = reader.readLine();
             }
