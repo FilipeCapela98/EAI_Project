@@ -1,6 +1,8 @@
-package nl.rug.eai.imagestream.twitterstreamingservice;
+package nl.rug.eai.imagestream.twitterstreamingservice.Utility;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import nl.rug.eai.imagestream.twitterstreamingservice.model.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -14,6 +16,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -22,16 +25,17 @@ import java.util.*;
 /*
  * Sample code to demonstrate the use of the Filtered Stream endpoint
  * */
-public class FilteredStreamDemo {
+@SpringBootApplication
+public class TwitterStreamingUtil {
     // To set your enviornment variables in your terminal run the following line:
     // export 'BEARER_TOKEN'='<your_bearer_token>'
 
-    public static void main(String args[]) throws IOException, URISyntaxException {
+    public static void startStreaming(String hashtag) throws IOException, URISyntaxException {
         String bearerToken = "AAAAAAAAAAAAAAAAAAAAAFR3JwEAAAAAEquyLtEZhuvH7jVLCzrba2Wearo%3DhIcSZNPXNWb3ZOrf2CcexWQbQgNPzhp7MInFZNsjihbzY9KRFe";
         if (null != bearerToken) {
             Map<String, String> rules = new HashMap<>();
-            rules.put("cats has:images", "cat images");
-            rules.put("dogs has:images", "dog images");
+            rules.put(hashtag+" has:images", hashtag+" images");
+            // rules.put("dogs has:images", "dog images");
             setupRules(bearerToken, rules);
             connectStream(bearerToken);
         } else {
@@ -43,7 +47,9 @@ public class FilteredStreamDemo {
      * This method calls the filtered stream endpoint and streams Tweets from it
      * */
     private static void connectStream(String bearerToken) throws IOException, URISyntaxException {
-        // ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
         HttpClient httpClient = HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setCookieSpec(CookieSpecs.STANDARD).build())
@@ -61,8 +67,14 @@ public class FilteredStreamDemo {
             String line = reader.readLine();
             while (line != null) {
                 // Tweet tweet = objectMapper.readValue(line, Tweet.class);
-                System.out.println(line);
+                // System.out.println(line);
+                Tweet tweet = objectMapper.readValue(line, Tweet.class);
                 line = reader.readLine();
+                if (tweet.getIncludes() != null) {
+                    for (TwitterMedia media : tweet.getIncludes().getMedia()) {
+                        System.out.println(media.getUrl());
+                    }
+                }
             }
         }
 
