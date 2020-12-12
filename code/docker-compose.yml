@@ -18,9 +18,13 @@ services:
     ports:
       - '8161:8161'
       - '61616:61616'
+      - '61613:61613'
+      - '61614:61614'
     environment:
       - 'ARTEMIS_USERNAME=admin'
       - 'ARTEMIS_PASSWORD=admin'
+    volumes:
+      - './override:/var/lib/artemis/etc-override'
 
   stream-management-service:
     image: docker.io/library/stream-management-service:0.0.1-SNAPSHOT
