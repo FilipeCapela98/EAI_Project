@@ -1,2 +1,8 @@
 nl/rug/eai/imagestream/commons/model/StartCommand.java
  nl.rug.eai.imagestream.commons.model.StartCommand
+nl/rug/eai/imagestream/commons/model/StopCommand.java
+ nl.rug.eai.imagestream.commons.model.StopCommand
+nl/rug/eai/imagestream/commons/model/StreamConsumerHeartbeatEvent.java
+ nl.rug.eai.imagestream.commons.model.StreamConsumerHeartbeatEvent
+nl/rug/eai/imagestream/commons/model/StreamProducerHeartbeatEvent.java
+ nl.rug.eai.imagestream.commons.model.StreamProducerHeartbeatEvent
