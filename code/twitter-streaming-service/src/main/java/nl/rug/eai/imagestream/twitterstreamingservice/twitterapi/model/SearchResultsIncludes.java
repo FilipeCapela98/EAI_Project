@@ -1,10 +1,10 @@
-package nl.rug.eai.imagestream.twitterstreamingservice.model;
+package nl.rug.eai.imagestream.twitterstreamingservice.twitterapi.model;
 
 import java.util.List;
 
 import lombok.Data;
 
 @Data
-public class TwitterIncludes {
-    private List<TwitterMedia> media;
+public class SearchResultsIncludes {
+    private List<TweetMedia> media;
 }
