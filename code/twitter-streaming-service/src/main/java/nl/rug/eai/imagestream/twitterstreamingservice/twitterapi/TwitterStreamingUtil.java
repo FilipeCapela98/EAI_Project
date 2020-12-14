@@ -1,22 +1,24 @@
 package nl.rug.eai.imagestream.twitterstreamingservice.twitterapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import nl.rug.eai.imagestream.twitterstreamingservice.twitterapi.model.SearchResultsWrapper;
 import nl.rug.eai.imagestream.twitterstreamingservice.twitterapi.model.TweetMedia;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.*;
-import java.net.URISyntaxException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,16 +41,16 @@ public class TwitterStreamingUtil {
         this.bearerToken = "AAAAAAAAAAAAAAAAAAAAAFR3JwEAAAAAEquyLtEZhuvH7jVLCzrba2Wearo%3DhIcSZNPXNWb3ZOrf2CcexWQbQgNPzhp7MInFZNsjihbzY9KRFe";
     }
 
-    public List<TweetMedia> fetchNewImages(String topic) {
-        SearchResultsWrapper searchResultsWrapper = fetchNewImagesRequest(topic);
+    public List<TweetMedia> fetchNewImages(String topic, LocalDateTime lastProcessTime) {
+        SearchResultsWrapper searchResultsWrapper = fetchNewImagesRequest(topic, lastProcessTime);
 
         if(searchResultsWrapper.getIncludes() == null) {
-            log.warn("Response returned from Twitter API does not have includes at endpoint " + getEndpoint(topic));
+            log.warn("Response returned from Twitter API does not have includes at endpoint " + getEndpoint(topic, lastProcessTime));
             return new ArrayList<>();
         }
 
         if(searchResultsWrapper.getIncludes().getMedia() == null) {
-            log.warn("Response returned from Twitter API does not have media at endpoint " + getEndpoint(topic));
+            log.warn("Response returned from Twitter API does not have media at endpoint " + getEndpoint(topic, lastProcessTime));
             return new ArrayList<>();
         }
 
@@ -57,19 +59,25 @@ public class TwitterStreamingUtil {
                 .collect(Collectors.toList());
     }
 
-    public SearchResultsWrapper fetchNewImagesRequest(String topic) {
+    public SearchResultsWrapper fetchNewImagesRequest(String topic, LocalDateTime lastProcessTime) {
         // Set up the endpoint
-        String endpoint = getEndpoint(topic);
+        String endpoint = getEndpoint(topic, lastProcessTime);
         HttpEntity<?> request = new HttpEntity<>(getHeaders());
 
-        ResponseEntity<SearchResultsWrapper> responseEntity = restTemplate.exchange(
-                endpoint,
-                HttpMethod.GET,
-                request,
-                SearchResultsWrapper.class
-        );
-
-        log.error(responseEntity.toString());
+        ResponseEntity<SearchResultsWrapper> responseEntity;
+        restTemplate.getMessageConverters()
+                .add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        try {
+            responseEntity = restTemplate.exchange(
+                    endpoint,
+                    HttpMethod.GET,
+                    request,
+                    SearchResultsWrapper.class
+            );
+        } catch (Exception e) {
+            log.error("Something went wrong during a request to: " + endpoint);
+            throw e;
+        }
 
         if(!responseEntity.getStatusCode().is2xxSuccessful()) {
             log.error("Something went wrong during a request to: " + endpoint);
@@ -87,10 +95,23 @@ public class TwitterStreamingUtil {
         return httpHeaders;
     }
 
-    private String getEndpoint(String topic) {
-        String query = topic + " has:images -is:retweet";
-        return "https://api.twitter.com/2/tweets/search/recent?expansions=attachments.media_keys" +
-                "&media.fields=url,preview_image_url&query=" + topic + " has:images -is:retweet";
+    private String getEndpoint(String topic, LocalDateTime lastProcessTime) {
+        String query = (topic + " has:images -is:retweet");
+        log.error(lastProcessTime.format(DateTimeFormatter.ISO_DATE_TIME));
+
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl("https://api.twitter.com/2/tweets/search/recent")
+                .queryParam("expansions", "attachments.media_keys")
+                .queryParam("media.fields", "url,preview_image_url");
+                //.queryParam("query", query);
+
+        // If this is not the first request, we need to add a start_time filter
+        if(!lastProcessTime.equals(LocalDateTime.MIN)) {
+            uriComponentsBuilder = uriComponentsBuilder.queryParam("start_time",
+                    lastProcessTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z");
+        }
+
+        return uriComponentsBuilder.toUriString()
+                + "&query=" + query;
     }
 
 }

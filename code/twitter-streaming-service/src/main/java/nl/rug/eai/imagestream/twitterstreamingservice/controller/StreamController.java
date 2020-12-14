@@ -5,11 +5,13 @@ import nl.rug.eai.imagestream.twitterstreamingservice.twitterapi.TwitterStreamin
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
@@ -18,10 +20,10 @@ public class StreamController {
     @Autowired
     TwitterStreamingRunner twitterStreamingRunner;
 
-    private final List<String> runningProcessors;
+    private final Map<String, LocalDateTime> runningProcessors;
 
     public StreamController() {
-        this.runningProcessors = new ArrayList<>();
+        this.runningProcessors = new ConcurrentHashMap<>();
     }
 
     public synchronized void start(String topic) {
@@ -33,7 +35,10 @@ public class StreamController {
         }
 
         log.info("Starting ingestion on topic " + topic);
-        runningProcessors.add(topic);
+        runningProcessors.put(topic, LocalDateTime.MIN);
+
+        // This is called asynchronously in a new thread due to the @Async.
+        // It terminated if the topic is removed from the list of running processors in this class
         twitterStreamingRunner.run(topic);
     }
 
@@ -49,7 +54,14 @@ public class StreamController {
     }
 
     public boolean isRunning(String topic) {
-        return this.runningProcessors.contains(topic);
+        return this.runningProcessors.containsKey(topic);
     }
 
+    public void updateLastProcessTime(String topic) {
+        this.runningProcessors.put(topic, LocalDateTime.now());
+    }
+
+    public LocalDateTime getLastProcessTime(String topic) {
+        return this.runningProcessors.get(topic);
+    }
 }
