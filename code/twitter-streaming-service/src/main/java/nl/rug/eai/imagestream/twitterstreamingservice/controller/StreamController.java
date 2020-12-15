@@ -43,7 +43,7 @@ public class StreamController {
     }
 
     public synchronized void stop(String topic) {
-        System.out.println("Received request to stop stream on: " + topic);
+        log.info("Received request to stop stream on: " + topic);
 
         if(!isRunning(topic)) {
             log.warn("Tried to stop stream on topic " + topic + ", but there was no processor running.");
@@ -58,7 +58,7 @@ public class StreamController {
     }
 
     public void updateLastProcessTime(String topic) {
-        this.runningProcessors.put(topic, LocalDateTime.now());
+        this.runningProcessors.replace(topic, LocalDateTime.now());
     }
 
     public LocalDateTime getLastProcessTime(String topic) {

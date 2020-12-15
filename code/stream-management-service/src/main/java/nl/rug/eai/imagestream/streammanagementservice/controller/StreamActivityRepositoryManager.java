@@ -1,10 +1,12 @@
 package nl.rug.eai.imagestream.streammanagementservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import nl.rug.eai.imagestream.streammanagementservice.model.StreamActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
+@Slf4j
 public class StreamActivityRepositoryManager {
 
     @Autowired
@@ -28,6 +30,10 @@ public class StreamActivityRepositoryManager {
         if(!streamActivityRepository.isStreamBeingConsumed(topic)) {
             streamCommandController.stop(topic);
         }
+    }
+
+    public void refreshStartCommand(String topic) {
+        this.streamActivityRepository.refreshStartCommand(topic);
     }
 
 }

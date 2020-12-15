@@ -38,9 +38,7 @@ public class TwitterStreamingRunner {
     public void run(String topic) {
         while(streamController.isRunning(topic)) {
             // Send heartbeat to let manager know we are still processing
-            streamProducerHeartbeatEventSender.send(new StreamProducerHeartbeatEvent(
-                    topic
-            ));
+            streamProducerHeartbeatEventSender.send(new StreamProducerHeartbeatEvent(topic));
 
             // Fetch new images from twitter
             List<TweetMedia> tweetMediaList = getTweetMedia(topic);

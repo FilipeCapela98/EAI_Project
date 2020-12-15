@@ -31,7 +31,7 @@ public class TwitterStreamingServiceApplication {
 
         try {
             Thread.sleep(60 * 1000);
-            twitterApp.stop("#meme");
+            twitterApp.stop("meme");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

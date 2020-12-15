@@ -97,7 +97,6 @@ public class TwitterStreamingUtil {
 
     private String getEndpoint(String topic, LocalDateTime lastProcessTime) {
         String query = (topic + " has:images -is:retweet");
-        log.error(lastProcessTime.format(DateTimeFormatter.ISO_DATE_TIME));
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl("https://api.twitter.com/2/tweets/search/recent")
                 .queryParam("expansions", "attachments.media_keys")
@@ -105,7 +104,7 @@ public class TwitterStreamingUtil {
                 //.queryParam("query", query);
 
         // If this is not the first request, we need to add a start_time filter
-        if(!lastProcessTime.equals(LocalDateTime.MIN)) {
+        if(lastProcessTime != null && !lastProcessTime.equals(LocalDateTime.MIN)) {
             uriComponentsBuilder = uriComponentsBuilder.queryParam("start_time",
                     lastProcessTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z");
         }
