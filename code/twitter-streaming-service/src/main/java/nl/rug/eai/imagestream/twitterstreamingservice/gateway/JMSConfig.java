@@ -13,7 +13,7 @@ public class JMSConfig {
      * @return A message converter, capable of converting Java objects to JSON
      */
     @Bean
-    public MessageConverter jacksonJmsMessageConverter() {
+    public MappingJackson2MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
