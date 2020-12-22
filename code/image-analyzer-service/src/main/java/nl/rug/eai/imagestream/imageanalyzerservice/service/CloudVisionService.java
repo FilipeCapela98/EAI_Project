@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -26,21 +28,28 @@ public class CloudVisionService {
     private CloudVisionTemplate cloudVisionTemplate;
 
     public void start() {
-        Resource imageResource = this.resourceLoader.getResource("file:src/main/resources/friends.jpg");
-        Resource outputImageResource = this.resourceLoader.getResource("file:src/main/resources/output.jpg");
-        AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
-                imageResource, Feature.Type.OBJECT_LOCALIZATION);
         try {
-            writeWithObjects(imageResource.getFile().toPath(), outputImageResource.getFile().toPath(), response.getLocalizedObjectAnnotationsList());
-        } catch (IOException e) {
+            String raw_url = "https://pbs.twimg.com/media/EpOMW12XUAQXnrx.jpg";
+            URL imageResource_url = new URL(raw_url);
+            Resource imageResource = this.resourceLoader.getResource(raw_url);
+            Resource outputImageResource = this.resourceLoader.getResource("file:src/main/resources/output.jpg");
+            AnnotateImageResponse response = this.cloudVisionTemplate.analyzeImage(
+                    imageResource, Feature.Type.OBJECT_LOCALIZATION);
+            try {
+                writeWithObjects(imageResource_url, outputImageResource.getFile().toPath(), response.getLocalizedObjectAnnotationsList());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(response.getLocalizedObjectAnnotationsList().toString());
+        } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        System.out.println(response.getLocalizedObjectAnnotationsList().toString());
+
     }
 
-    private static void writeWithObjects(Path inputPath, Path outputPath, List<LocalizedObjectAnnotation> objects) {
+    private static void writeWithObjects(URL inputImage, Path outputPath, List<LocalizedObjectAnnotation> objects) {
         try {
-            BufferedImage img = ImageIO.read(inputPath.toFile());
+            BufferedImage img = ImageIO.read(inputImage);
             annotateWithObjects(img, objects);
             ImageIO.write(img, "jpg", outputPath.toFile());
 
