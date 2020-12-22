@@ -19,10 +19,12 @@ repositories {
 }
 
 dependencies {
+	implementation project(':commons')
 	implementation 'org.springframework.boot:spring-boot-starter-activemq'
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-vision:1.2.6.RELEASE'
 	implementation 'org.springframework.cloud:spring-cloud-gcp-dependencies:1.2.6.RELEASE'
+	implementation 'com.google.code.gson:gson:2.8.6'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
