@@ -10,7 +10,6 @@ import sortByDatetime from "../../utils/datetime";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-// import SockJsClient from 'react-stomp';
 import { Client, Message  } from '@stomp/stompjs';
 
 export class Home extends React.Component {
@@ -26,6 +25,15 @@ export class Home extends React.Component {
   constructor(props) {
     super(props);
   }
+
+  subscribed_data = function(message) {
+    // called when the client receives a STOMP message from the server
+    if (message.body) {
+      alert("got message with body " + message.body)
+    } else {
+      alert("got empty message");
+    }
+  };
 
   componentDidMount() {
     console.log('Component did mount');
@@ -45,8 +53,14 @@ export class Home extends React.Component {
         //   this.setState({serverTime: message.body});
         // });
 
-        this.client.subscribe('/topic/topic_name', message => {
-          alert(message.body);
+        this.client.subscribe('analyzed-images-stream', message => {
+          const text = JSON.parse(message.body).annotatedImage;
+          const identifiedObject = JSON.parse(message.body).identifiedObject;
+          const {
+            createTweet,
+            activeUser: { id: userId },
+          } = this.props;
+          createTweet({ userId, text, identifiedObject });
         });
       },
       // Helps during debugging, remove in production
@@ -57,6 +71,8 @@ export class Home extends React.Component {
 
     this.client.activate();
   }
+
+  
   
   publishMessage(message) {
     // trying to publish a message when the broker is not connected will throw an exception
@@ -67,7 +83,7 @@ export class Home extends React.Component {
     if (message.length > 0) {
       const payLoad = {topic: message };
       // You can additionally pass headers
-      this.client.publish({destination: '/streaming-service-heartbeats', body: JSON.stringify(payLoad)});
+      this.client.publish({destination: 'streaming-service-heartbeats', body: JSON.stringify(payLoad)});
     }
     return true;
   }
@@ -94,22 +110,11 @@ export class Home extends React.Component {
               <TweetInput client={this.client} onSubmit={this.onSubmit} />
               }
             </Col>
-            <Col>
+            <Col xs={9}>
               <Timeline>
                 {tweets.map((tweet) => (
                   <Tweet {...tweet} key={tweet.id} />
                 ))}
-                {/* <SockJsClient
-                  url="http://localhost:61614/ws"
-                  topics={["/topics/all"]}
-                  debug= {true}
-                  onMessage={(msg) => {
-                    console.log(msg);
-                  }}
-                  ref={(client) => {
-                    this.clientRef = client;
-                  }}
-                /> */}
               </Timeline>
             </Col>
           </Row>

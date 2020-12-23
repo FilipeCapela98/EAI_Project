@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -12,25 +12,26 @@ import {
   Typography,
   Button,
   withStyles,
-} from '@material-ui/core';
-import Markdown from 'react-markdown';
-import colorFrom from '../../utils/colors';
+} from "@material-ui/core";
+import Markdown from "react-markdown";
+import colorFrom from "../../utils/colors";
+import { Base64 } from "js-base64";
 
 const imageUrlRe = /\b(https?:\/\/\S+(?:png|jpe?g|gif)\S*)\b/g;
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
     marginBottom: theme.spacing.unit * 2,
   },
   cardMedia: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: "56.25%", // 16:9
   },
   content: {
-    wordWrap: 'break-word',
+    wordWrap: "break-word",
   },
   link: {
-    textDecoration: 'none',
+    textDecoration: "none",
     color: theme.palette.primary.dark,
   },
 });
@@ -40,28 +41,22 @@ const Tweet = ({
   id,
   text,
   createdAt,
+  identifiedObject,
   user: { username },
   replyToId,
   repliedTweet,
   highlighted,
 }) => {
-  const image = text.match(imageUrlRe);
+  const image = Base64.isValid(text) && text.length > 200;
+  // const image = text.match(imageUrlRe);
 
   return (
     <Card
       key={id}
-      component={highlighted ? 'div' : 'li'}
+      component={highlighted ? "div" : "li"}
       className={classes.card}
       elevation={highlighted ? 8 : 1}
     >
-      {image && (
-        <CardMedia
-          className={classes.cardMedia}
-          image={image[0]}
-          title="An tweet's image"
-        />
-      )}
-
       <CardHeader
         avatar={
           <Avatar
@@ -80,29 +75,30 @@ const Tweet = ({
         }
       />
 
+      {image && (
+        <div style={{ textAlign: "center" }}>
+          <img
+            style={{ width: "500px", height: "500px" }}
+            src={`data:image/jpeg;base64,${text}`}
+          />
+        </div>
+      )}
+
       <CardContent className={classes.content}>
-        {repliedTweet && (
-          <Typography variant="caption">
-            In reply to{' '}
-            <Link to={`/tweet/${replyToId}`} className={classes.link}>
-              <cite>{repliedTweet.text}</cite>
-            </Link>
-          </Typography>
-        )}
-        <Typography variant={highlighted ? 'display1' : 'subheading'}>
+        <Typography variant={highlighted ? "display1" : "subheading"}>
           <Markdown
-            source={text}
+            source={identifiedObject}
             allowedTypes={[
-              'root',
-              'paragraph',
-              'break',
-              'emphasis',
-              'strong',
-              'delete',
-              'link',
-              'linkReference',
-              'inlineCode',
-              'code',
+              "root",
+              "paragraph",
+              "break",
+              "emphasis",
+              "strong",
+              "delete",
+              "link",
+              "linkReference",
+              "inlineCode",
+              "code",
             ]}
           />
         </Typography>
