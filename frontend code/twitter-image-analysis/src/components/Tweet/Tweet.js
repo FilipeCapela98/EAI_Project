@@ -5,19 +5,15 @@ import { Link } from "react-router-dom";
 import {
   Card,
   CardHeader,
-  CardMedia,
   CardContent,
-  CardActions,
   Avatar,
   Typography,
-  Button,
   withStyles,
 } from "@material-ui/core";
 import Markdown from "react-markdown";
 import colorFrom from "../../utils/colors";
 import { Base64 } from "js-base64";
 
-const imageUrlRe = /\b(https?:\/\/\S+(?:png|jpe?g|gif)\S*)\b/g;
 
 const styles = (theme) => ({
   card: {
@@ -43,12 +39,9 @@ const Tweet = ({
   createdAt,
   identifiedObject,
   user: { username },
-  replyToId,
-  repliedTweet,
   highlighted,
 }) => {
   const image = Base64.isValid(text) && text.length > 200;
-  // const image = text.match(imageUrlRe);
 
   return (
     <Card

@@ -21,10 +21,6 @@ export class Home extends React.Component {
     tweets: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
     createTweet: PropTypes.func.isRequired,
   };
-  
-  constructor(props) {
-    super(props);
-  }
 
   subscribed_data = function(message) {
     // called when the client receives a STOMP message from the server
@@ -36,7 +32,6 @@ export class Home extends React.Component {
   };
 
   componentDidMount() {
-    console.log('Component did mount');
     this.client = new Client();
 
     this.client.configure({
@@ -90,11 +85,6 @@ export class Home extends React.Component {
 
   onSubmit = (text) => {
     this.publishMessage(text)
-    const {
-      createTweet,
-      activeUser: { id: userId },
-    } = this.props;
-    createTweet({ userId, text });
   };
 
   render() {

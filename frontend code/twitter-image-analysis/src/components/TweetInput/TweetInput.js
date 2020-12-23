@@ -35,7 +35,6 @@ class TweetInput extends React.Component {
     if (!value.trim()) {
       return;
     }
-    // this.props.clientRef.sendMessage('/topics/all', JSON.stringify(value));
     this.props.onSubmit(value, event);
     this.input.current.value = '';
   };
