@@ -39,6 +39,12 @@ class TweetInput extends React.Component {
     this.input.current.value = '';
   };
 
+  handleStop(event) {
+    event.preventDefault();
+    this.props.onStop(event);
+
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -53,13 +59,28 @@ class TweetInput extends React.Component {
             placeholder="Enter Hashtags?"
             inputRef={this.input}
           />
-          <Grid container justify="flex-end">
+          <Grid container justify="flex-end" spacing={24}>
+            <Grid item>
+            <Button
+                variant="outlined"
+                color="primary"
+                type="submit"
+                onClick= {this.handleStop.bind(this)}
+                className={classes.tweetButton}
+                value="Stop"
+                mt={2}
+              >
+                Stop
+              </Button>
+            </Grid>
             <Grid item>
               <Button
                 variant="outlined"
                 color="primary"
                 type="submit"
                 className={classes.tweetButton}
+                value="Send"
+                mt={2}
               >
                 Send
               </Button>

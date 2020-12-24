@@ -1,0 +1,5 @@
+export const JMS_USERNAME = "admin"
+export const JMS_PASSWORD = "admin"
+export const BROKER_URL = "ws://localhost:61616"
+export const PUBLISH_QUEUE = "streaming-service-heartbeats"
+export const SUBSCRIBER_QUEUE = "analyzed-images-stream"

@@ -11,8 +11,10 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Client, Message  } from '@stomp/stompjs';
+import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL } from "../../utils/Constants"
 
 export class Home extends React.Component {
+  sendTweetInterval = null;
   static propTypes = {
     activeUser: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -21,34 +23,21 @@ export class Home extends React.Component {
     tweets: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
     createTweet: PropTypes.func.isRequired,
   };
-
-  subscribed_data = function(message) {
-    // called when the client receives a STOMP message from the server
-    if (message.body) {
-      alert("got message with body " + message.body)
-    } else {
-      alert("got empty message");
-    }
-  };
+  
 
   componentDidMount() {
     this.client = new Client();
-
     this.client.configure({
-      brokerURL: 'ws://localhost:61616',
+      brokerURL: BROKER_URL,
       connectHeaders: {
-        login: 'admin',
-        passcode: 'admin',
+        login: JMS_USERNAME,
+        passcode: JMS_PASSWORD,
       },
       onConnect: () => {
         console.log('onConnect');
 
-        // this.client.subscribe('/queue/now', message => {
-        //   console.log(message);
-        //   this.setState({serverTime: message.body});
-        // });
-
-        this.client.subscribe('analyzed-images-stream', message => {
+        this.client.subscribe(SUBSCRIBER_QUEUE, message => {
+          if (message.body) {
           const text = JSON.parse(message.body).annotatedImage;
           const identifiedObject = JSON.parse(message.body).identifiedObject;
           const {
@@ -56,6 +45,9 @@ export class Home extends React.Component {
             activeUser: { id: userId },
           } = this.props;
           createTweet({ userId, text, identifiedObject });
+        } else {
+          console.log("Empty message");
+        }
         });
       },
       // Helps during debugging, remove in production
@@ -63,13 +55,11 @@ export class Home extends React.Component {
         console.log(new Date(), str);
       }
     });
-
     this.client.activate();
   }
 
-  
-  
   publishMessage(message) {
+    console.log("Triggered")
     // trying to publish a message when the broker is not connected will throw an exception
     if (!this.client.connected) {
       console.log("Broker disconnected, can't send message.");
@@ -78,13 +68,20 @@ export class Home extends React.Component {
     if (message.length > 0) {
       const payLoad = {topic: message };
       // You can additionally pass headers
-      this.client.publish({destination: 'streaming-service-heartbeats', body: JSON.stringify(payLoad)});
+      this.client.publish({destination: PUBLISH_QUEUE, body: JSON.stringify(payLoad)});
     }
     return true;
   }
 
   onSubmit = (text) => {
-    this.publishMessage(text)
+    // this.sendTweetInterval = setInterval(() => { console.log('Hello') }, 500);
+    // this.publishMessage(text)
+    this.sendTweetInterval = setInterval(() => { this.publishMessage(text) }, 5000);
+  };
+
+  onStop = () => {
+    console.log("Stopped!!!");
+    clearTimeout(this.sendTweetInterval)
   };
 
   render() {
@@ -97,7 +94,7 @@ export class Home extends React.Component {
             <Col xs={3}>
             {/* <TweetInput onSubmit={this.onSubmit} /> */}
               { this.client &&
-              <TweetInput client={this.client} onSubmit={this.onSubmit} />
+              <TweetInput client={this.client} onSubmit={this.onSubmit} onStop={this.onStop} />
               }
             </Col>
             <Col xs={9}>
@@ -119,7 +116,7 @@ const mapStateToProps = (state) => ({
   tweets: getAllTweets(state.tweets)
     .map((tweet) => ({
       ...tweet,
-      repliedTweet: getTweetById(state.tweets, tweet.replyToId),
+      // repliedTweet: getTweetById(state.tweets, tweet.replyToId),
       user: getUserById(state.users, tweet.userId),
     }))
     .sort(sortByDatetime),
