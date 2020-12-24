@@ -13,7 +13,6 @@ export const rootReducer = combineReducers({
 export default connectRouter(history)(rootReducer);
 
 export const getTweetMeta = (state, tweet) => {
-  const repliedTweet = fromTweets.getTweetById(state.tweets, tweet.replyToId);
   const user = fromUsers.getUserById(state.users, tweet.userId);
-  return { ...tweet, repliedTweet, user };
+  return { ...tweet, user };
 };

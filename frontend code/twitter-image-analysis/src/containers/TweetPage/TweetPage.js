@@ -10,6 +10,8 @@ import {
 import { getTweetMeta } from '../../modules';
 import Tweet from '../../components/Tweet';
 import Container from 'react-bootstrap/Container';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
 export class TweetPage extends React.Component {
   static propTypes = {
@@ -36,7 +38,6 @@ export class TweetPage extends React.Component {
 
     createTweet({
       userId: activeUser.id,
-      replyToId: params.tweetId,
       text,
     });
   };
@@ -51,6 +52,7 @@ export class TweetPage extends React.Component {
     return (
       <React.Fragment>
         <Container fluid >
+        <FontAwesomeIcon icon={faChevronLeft} size="3x" onClick={this.props.history.goBack} style={{cursor:"pointer"}} />
           <Tweet {...tweet} highlighted />
         </Container>
       </React.Fragment>

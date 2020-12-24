@@ -59,7 +59,6 @@ export class Home extends React.Component {
   }
 
   publishMessage(message) {
-    console.log("Triggered")
     // trying to publish a message when the broker is not connected will throw an exception
     if (!this.client.connected) {
       console.log("Broker disconnected, can't send message.");
@@ -91,13 +90,12 @@ export class Home extends React.Component {
       <React.Fragment>
         <Container fluid>
           <Row>
-            <Col xs={3}>
-            {/* <TweetInput onSubmit={this.onSubmit} /> */}
+            <Col xs={4}>
               { this.client &&
               <TweetInput client={this.client} onSubmit={this.onSubmit} onStop={this.onStop} />
               }
             </Col>
-            <Col xs={9}>
+            <Col xs={8}>
               <Timeline>
                 {tweets.map((tweet) => (
                   <Tweet {...tweet} key={tweet.id} />
@@ -116,7 +114,6 @@ const mapStateToProps = (state) => ({
   tweets: getAllTweets(state.tweets)
     .map((tweet) => ({
       ...tweet,
-      // repliedTweet: getTweetById(state.tweets, tweet.replyToId),
       user: getUserById(state.users, tweet.userId),
     }))
     .sort(sortByDatetime),

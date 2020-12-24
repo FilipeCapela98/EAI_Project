@@ -7,10 +7,8 @@ import {
   CardHeader,
   CardContent,
   Avatar,
-  Typography,
   withStyles,
 } from "@material-ui/core";
-import Markdown from "react-markdown";
 import colorFrom from "../../utils/colors";
 import { Base64 } from "js-base64";
 
@@ -41,8 +39,21 @@ const Tweet = ({
   user: { username },
   highlighted,
 }) => {
+  const identifiedObjectJSON = ( <table class="table table-dark table-bordered" style={{width:"50%"}}>
+    <tbody>
+    {identifiedObject &&
+      Object.keys(JSON.parse(identifiedObject)).map((key, i) => {
+        return(
+          <tr>
+          <td>{key}</td>
+          <td>{JSON.parse(identifiedObject)[key]}</td>
+          </tr>)
+        })
+    }
+    </tbody>
+  </table>)
   const image = Base64.isValid(text) && text.length > 200;
-
+ 
   return (
     <Card
       key={id}
@@ -67,34 +78,18 @@ const Tweet = ({
           </Link>
         }
       />
-
+      <Link to={`/tweet/${id}`} className={classes.link}>
       {image && (
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center", backgroundColor:"lightgray" }}>
           <img
             style={{ width: "500px", height: "500px" }}
             src={`data:image/jpeg;base64,${text}`}
           />
         </div>
       )}
-
-      <CardContent className={classes.content}>
-        <Typography variant={highlighted ? "display1" : "subheading"}>
-          <Markdown
-            source={identifiedObject}
-            allowedTypes={[
-              "root",
-              "paragraph",
-              "break",
-              "emphasis",
-              "strong",
-              "delete",
-              "link",
-              "linkReference",
-              "inlineCode",
-              "code",
-            ]}
-          />
-        </Typography>
+      </Link>
+      <CardContent className={classes.content} style={{display:"flex", justifyContent:"center"}}>
+          {identifiedObjectJSON}
       </CardContent>
     </Card>
   );
@@ -117,7 +112,7 @@ Tweet.propTypes = {
 };
 
 Tweet.defaultProps = {
-  replyToId: null,
+  // replyToId: null,
   repliedTweet: null,
   highlighted: false,
 };
