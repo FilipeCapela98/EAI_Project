@@ -17,7 +17,7 @@ public class ProcessedImageDataSender {
         log.info("Sending data on queue: " + annotatedImage);
         try {
             jmsTemplate.setPubSubDomain(true);
-            jmsTemplate.convertAndSend("analyzed-images-stream", annotatedImage);
+            jmsTemplate.convertAndSend("analyzed-images-stream/" + annotatedImage.getTag().replaceAll(" ","_"), annotatedImage);
         } catch (Exception e) {
             log.error(e.toString());
         }

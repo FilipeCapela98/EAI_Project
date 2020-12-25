@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class AnnotatedImage {
+public class FilteredTweetImage {
     private String identifier;
+    private String type;
+    private String url;
     private String tag;
-    private String identifiedObject;
-    private String annotatedImage;
 }
