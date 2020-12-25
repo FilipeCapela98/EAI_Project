@@ -48,7 +48,7 @@ public class CloudVisionServiceUtil {
             0xEA9999 // pink
     };
 
-    public AnnotatedImage processImage(String identifier, String image_url) {
+    public AnnotatedImage processImage(String identifier,String tag, String image_url) {
         Gson gson = new Gson();
         String identifiedObject = "";
         String annotatedImage = "";
@@ -67,7 +67,7 @@ public class CloudVisionServiceUtil {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return new AnnotatedImage(identifier,identifiedObject,annotatedImage);
+        return new AnnotatedImage(identifier,tag, identifiedObject,annotatedImage);
     }
 
     private static String writeWithObjects(URL inputImage, List<LocalizedObjectAnnotation> objects) {
