@@ -24,6 +24,22 @@ export class Home extends React.Component {
     tweets: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
     createTweet: PropTypes.func.isRequired,
   };
+
+  initialQueueSetup(){
+    this.client = new Client();
+    this.client.configure({
+      brokerURL: BROKER_URL,
+      connectHeaders: {
+        login: JMS_USERNAME,
+        passcode: JMS_PASSWORD,
+      },
+      // Helps during debugging, remove in production
+      // debug: (str) => {
+      //   console.log(new Date(), str);
+      // }
+    });
+    this.client.activate();
+  }
   
   subscribeFromQueue(queue) {
     this.client = new Client();
@@ -57,7 +73,8 @@ export class Home extends React.Component {
   }
 
   componentDidMount() {
-    this.subscribeFromQueue(SUBSCRIBER_QUEUE);
+    this.initialQueueSetup();
+    // this.subscribeFromQueue(SUBSCRIBER_QUEUE);
   }
 
   publishMessage(message) {
@@ -75,13 +92,15 @@ export class Home extends React.Component {
   }
 
   onSubmit = (text) => {
-    // this.sendTweetInterval = setInterval(() => { console.log('Hello') }, 500);
     // this.publishMessage(text)
+    this.subscribeFromQueue(`${SUBSCRIBER_QUEUE}/${text.replace(" ","_")}`);
     this.sendTweetInterval = setInterval(() => { this.publishMessage(text) }, 5000);
   };
 
   onStop = () => {
     console.log("Stopped!!!");
+    this.client.unsubscribe();
+    this.initialQueueSetup();
     clearTimeout(this.sendTweetInterval)
   };
 

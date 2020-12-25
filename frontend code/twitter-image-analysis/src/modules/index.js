@@ -3,7 +3,7 @@ import { connectRouter } from 'connected-react-router';
 import history from '../utils/history';
 
 import users, * as fromUsers from './users';
-import tweets, * as fromTweets from './tweets';
+import tweets from './tweets';
 
 export const rootReducer = combineReducers({
   users,
