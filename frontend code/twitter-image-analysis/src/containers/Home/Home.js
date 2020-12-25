@@ -15,6 +15,7 @@ import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL
 
 export class Home extends React.Component {
   sendTweetInterval = null;
+  client = null;
   static propTypes = {
     activeUser: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -24,8 +25,7 @@ export class Home extends React.Component {
     createTweet: PropTypes.func.isRequired,
   };
   
-
-  componentDidMount() {
+  subscribeFromQueue(queue) {
     this.client = new Client();
     this.client.configure({
       brokerURL: BROKER_URL,
@@ -34,9 +34,7 @@ export class Home extends React.Component {
         passcode: JMS_PASSWORD,
       },
       onConnect: () => {
-        console.log('onConnect');
-
-        this.client.subscribe(SUBSCRIBER_QUEUE, message => {
+        this.client.subscribe(queue, message => {
           if (message.body) {
           const text = JSON.parse(message.body).annotatedImage;
           const identifiedObject = JSON.parse(message.body).identifiedObject;
@@ -56,6 +54,10 @@ export class Home extends React.Component {
       }
     });
     this.client.activate();
+  }
+
+  componentDidMount() {
+    this.subscribeFromQueue(SUBSCRIBER_QUEUE);
   }
 
   publishMessage(message) {

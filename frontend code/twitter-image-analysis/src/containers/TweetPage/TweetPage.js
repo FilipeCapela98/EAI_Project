@@ -10,8 +10,8 @@ import {
 import { getTweetMeta } from '../../modules';
 import Tweet from '../../components/Tweet';
 import Container from 'react-bootstrap/Container';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 export class TweetPage extends React.Component {
   static propTypes = {
@@ -25,7 +25,6 @@ export class TweetPage extends React.Component {
       username: PropTypes.string.isRequired,
     }),
     tweet: PropTypes.object.isRequired,
-    replies: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
     createTweet: PropTypes.func.isRequired,
   };
 

@@ -39,12 +39,12 @@ const Tweet = ({
   user: { username },
   highlighted,
 }) => {
-  const identifiedObjectJSON = ( <table class="table table-dark table-bordered" style={{width:"50%"}}>
+  const identifiedObjectJSON = ( <table className="table table-dark table-bordered" style={{width:"50%"}}>
     <tbody>
     {identifiedObject &&
       Object.keys(JSON.parse(identifiedObject)).map((key, i) => {
         return(
-          <tr>
+          <tr key={key}>
           <td>{key}</td>
           <td>{JSON.parse(identifiedObject)[key]}</td>
           </tr>)
@@ -72,22 +72,28 @@ const Tweet = ({
           </Avatar>
         }
         title={username}
+        // subheader={
+        //   <Link to={`/tweet/${id}`} className={classes.link}>
+        //     {moment(createdAt).fromNow()}
+        //   </Link>
+        // }
         subheader={
-          <Link to={`/tweet/${id}`} className={classes.link}>
+          <div>
             {moment(createdAt).fromNow()}
-          </Link>
+          </div>
         }
       />
-      <Link to={`/tweet/${id}`} className={classes.link}>
+      {/* <Link to={`/tweet/${id}`} className={classes.link}> */}
       {image && (
         <div style={{ textAlign: "center", backgroundColor:"lightgray" }}>
           <img
+            alt="annotated-pic"
             style={{ width: "500px", height: "500px" }}
             src={`data:image/jpeg;base64,${text}`}
           />
         </div>
       )}
-      </Link>
+      {/* </Link> */}
       <CardContent className={classes.content} style={{display:"flex", justifyContent:"center"}}>
           {identifiedObjectJSON}
       </CardContent>
