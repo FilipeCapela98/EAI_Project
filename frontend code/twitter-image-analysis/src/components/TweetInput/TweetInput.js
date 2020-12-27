@@ -61,7 +61,7 @@ class TweetInput extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} style={{position:"sticky", top:"100px"}}>
         <form onSubmit={this.onSubmit} autoComplete="off">
           <TextField
             required
