@@ -13,6 +13,7 @@ export const createTweet = payload => ({
     userId: null, // user's id
     text: '', // content of the tweet
     identifiedObject: '',
+    tag:'',
     ...payload,
   },
 });

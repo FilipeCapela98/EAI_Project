@@ -54,11 +54,12 @@ export class Home extends React.Component {
           if (message.body) {
           const text = JSON.parse(message.body).annotatedImage;
           const identifiedObject = JSON.parse(message.body).identifiedObject;
+          const tag = JSON.parse(message.body).tag;
           const {
             createTweet,
             activeUser: { id: userId },
           } = this.props;
-          createTweet({ userId, text, identifiedObject });
+          createTweet({ userId, text, identifiedObject, tag });
         } else {
           console.log("Empty message");
         }

@@ -36,6 +36,7 @@ const Tweet = ({
   text,
   createdAt,
   identifiedObject,
+  tag,
   user: { username },
   highlighted,
 }) => {
@@ -65,13 +66,13 @@ const Tweet = ({
         avatar={
           <Avatar
             style={{
-              backgroundColor: colorFrom(username),
+              backgroundColor: colorFrom(typeof tag !== 'undefined' ? tag : username),
             }}
           >
-            {username[0]}
+            {typeof tag !== 'undefined' ? tag[0] : username[0]}
           </Avatar>
         }
-        title={username}
+        title={typeof tag !== 'undefined' ? tag : username}
         // subheader={
         //   <Link to={`/tweet/${id}`} className={classes.link}>
         //     {moment(createdAt).fromNow()}
