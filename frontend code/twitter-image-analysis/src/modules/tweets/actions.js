@@ -12,7 +12,8 @@ export const createTweet = payload => ({
     createdAt: moment(), // datetime object of tweet's creation
     userId: null, // user's id
     text: '', // content of the tweet
-    replyToId: null, // if the tweet is a reply, id to the original tweet
+    identifiedObject: '',
+    tag:'',
     ...payload,
   },
 });

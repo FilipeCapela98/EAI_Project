@@ -35,7 +35,5 @@ export default combineReducers({
 // Selectors
 // Probably better to use Reselect
 export const getTweetById = (state, id) => state.byId[id];
-export const getRepliesById = (state, id) =>
-  getAllTweets(state).filter(tweet => tweet.replyToId === id);
 export const getAllTweets = state =>
   state.allIds.map(id => getTweetById(state, id));
