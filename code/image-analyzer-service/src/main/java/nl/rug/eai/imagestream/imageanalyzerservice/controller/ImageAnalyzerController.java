@@ -13,10 +13,7 @@ public class ImageAnalyzerController {
     ImageAnalyzerRunner imageAnalyzerRunner;
 
     public synchronized void start(String topic) {
-        log.info("Received request to start stream on: " + topic);
-
-        // This is called asynchronously in a new thread due to the @Async.
-        // It terminated if the topic is removed from the list of running processors in this class
+        log.info("Received request: " + topic);
         imageAnalyzerRunner.run(topic);
     }
 }

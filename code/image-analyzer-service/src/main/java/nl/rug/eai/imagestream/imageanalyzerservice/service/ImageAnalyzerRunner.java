@@ -20,7 +20,7 @@ public class ImageAnalyzerRunner {
     ProcessedImageDataSender processedImageDataSender;
 
     public void run(String topic) {
-        // Fetch new images from twitter
+        // Process the images
         AnnotatedImage annotatedImage = getAnalyzedImage(topic);
 
         // The results should be put in the pipeline queue for further processing

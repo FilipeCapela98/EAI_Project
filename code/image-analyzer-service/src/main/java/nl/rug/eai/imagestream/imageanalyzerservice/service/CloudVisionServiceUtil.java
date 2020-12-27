@@ -89,16 +89,17 @@ public class CloudVisionServiceUtil {
     }
 
     public static void annotateWithObjects(BufferedImage img, List<LocalizedObjectAnnotation> objects) {
+        int index = -1;
         for (LocalizedObjectAnnotation object : objects) {
-            annotateWithObject(img, object);
+            annotateWithObject(img, object, ++index);
         }
     }
 
-    private static void annotateWithObject(BufferedImage img, LocalizedObjectAnnotation object) {
+    private static void annotateWithObject(BufferedImage img, LocalizedObjectAnnotation object, Integer index) {
         int width = img.getWidth();
         int height = img.getHeight();
-        Random randomGenerator = new Random(); // Construct a new Random number generator
-        int randomNumber = randomGenerator.nextInt(mColors.length);
+//        Random randomGenerator = new Random(); // Construct a new Random number generator
+//        int randomNumber = randomGenerator.nextInt(mColors.length);
         Graphics2D gfx = img.createGraphics();
         Polygon poly = new Polygon();
         for (NormalizedVertex vertex : object.getBoundingPoly().getNormalizedVerticesList()) {
@@ -106,7 +107,7 @@ public class CloudVisionServiceUtil {
         }
         gfx.setStroke(new BasicStroke(4));
 //        gfx.setColor(new Color(0x00ff00));
-        gfx.setColor(new Color(mColors[randomNumber]));
+        gfx.setColor(new Color(mColors[index % mColors.length]));
         gfx.draw(poly);
     }
 }
