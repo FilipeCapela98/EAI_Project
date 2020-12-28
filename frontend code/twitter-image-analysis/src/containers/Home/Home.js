@@ -11,7 +11,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Client, Message  } from '@stomp/stompjs';
-import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL } from "../../utils/Constants"
+import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL, TYPE } from "../../utils/Constants"
 
 export class Home extends React.Component {
   sendTweetInterval = null;
@@ -85,9 +85,9 @@ export class Home extends React.Component {
       return false;
     }
     if (message.length > 0) {
-      const payLoad = {topic: message };
+      const payLoad = {'topic': message};
       // You can additionally pass headers
-      this.client.publish({destination: PUBLISH_QUEUE, body: JSON.stringify(payLoad)});
+      this.client.publish({destination: PUBLISH_QUEUE, body: JSON.stringify(payLoad),  headers: {_type: TYPE}, skipContentLengthHeader: true});
     }
     return true;
   }
