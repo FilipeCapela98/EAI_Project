@@ -1,36 +1,31 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardHeader,
-  CardMedia,
   CardContent,
-  CardActions,
   Avatar,
-  Typography,
-  Button,
   withStyles,
-} from '@material-ui/core';
-import Markdown from 'react-markdown';
-import colorFrom from '../../utils/colors';
+} from "@material-ui/core";
+import colorFrom from "../../utils/colors";
+import { Base64 } from "js-base64";
 
-const imageUrlRe = /\b(https?:\/\/\S+(?:png|jpe?g|gif)\S*)\b/g;
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
     marginBottom: theme.spacing.unit * 2,
   },
   cardMedia: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: "56.25%", // 16:9
   },
   content: {
-    wordWrap: 'break-word',
+    wordWrap: "break-word",
   },
   link: {
-    textDecoration: 'none',
+    textDecoration: "none",
     color: theme.palette.primary.dark,
   },
 });
@@ -40,72 +35,68 @@ const Tweet = ({
   id,
   text,
   createdAt,
+  identifiedObject,
+  tag,
   user: { username },
-  replyToId,
-  repliedTweet,
   highlighted,
 }) => {
-  const image = text.match(imageUrlRe);
-
+  const identifiedObjectJSON = ( <table className="table table-dark table-bordered" style={{width:"50%"}}>
+    <tbody>
+    {identifiedObject &&
+      Object.keys(JSON.parse(identifiedObject)).map((key, i) => {
+        return(
+          <tr key={key}>
+          <td>{key}</td>
+          <td>{JSON.parse(identifiedObject)[key]}</td>
+          </tr>)
+        })
+    }
+    </tbody>
+  </table>)
+  const image = Base64.isValid(text) && text.length > 200;
+ 
   return (
     <Card
       key={id}
-      component={highlighted ? 'div' : 'li'}
+      component={highlighted ? "div" : "li"}
       className={classes.card}
       elevation={highlighted ? 8 : 1}
     >
-      {image && (
-        <CardMedia
-          className={classes.cardMedia}
-          image={image[0]}
-          title="An tweet's image"
-        />
-      )}
-
       <CardHeader
         avatar={
           <Avatar
             style={{
-              backgroundColor: colorFrom(username),
+              backgroundColor: colorFrom(typeof tag !== 'undefined' ? tag : username),
             }}
           >
-            {username[0]}
+            {typeof tag !== 'undefined' ? tag[0] : username[0]}
           </Avatar>
         }
-        title={username}
+        title={typeof tag !== 'undefined' ? tag : username}
+        // subheader={
+        //   <Link to={`/tweet/${id}`} className={classes.link}>
+        //     {moment(createdAt).fromNow()}
+        //   </Link>
+        // }
         subheader={
-          <Link to={`/tweet/${id}`} className={classes.link}>
+          <div>
             {moment(createdAt).fromNow()}
-          </Link>
+          </div>
         }
       />
-
-      <CardContent className={classes.content}>
-        {repliedTweet && (
-          <Typography variant="caption">
-            In reply to{' '}
-            <Link to={`/tweet/${replyToId}`} className={classes.link}>
-              <cite>{repliedTweet.text}</cite>
-            </Link>
-          </Typography>
-        )}
-        <Typography variant={highlighted ? 'display1' : 'subheading'}>
-          <Markdown
-            source={text}
-            allowedTypes={[
-              'root',
-              'paragraph',
-              'break',
-              'emphasis',
-              'strong',
-              'delete',
-              'link',
-              'linkReference',
-              'inlineCode',
-              'code',
-            ]}
+      {/* <Link to={`/tweet/${id}`} className={classes.link}> */}
+      {image && (
+        <div style={{ textAlign: "center", backgroundColor:"lightgray" }}>
+          <img
+            alt="annotated-pic"
+            style={{ width: "500px", height: "500px" }}
+            src={`data:image/jpeg;base64,${text}`}
           />
-        </Typography>
+        </div>
+      )}
+      {/* </Link> */}
+      <CardContent className={classes.content} style={{display:"flex", justifyContent:"center"}}>
+          {identifiedObjectJSON}
       </CardContent>
     </Card>
   );
@@ -128,7 +119,7 @@ Tweet.propTypes = {
 };
 
 Tweet.defaultProps = {
-  replyToId: null,
+  // replyToId: null,
   repliedTweet: null,
   highlighted: false,
 };

@@ -10,10 +10,12 @@ import sortByDatetime from "../../utils/datetime";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-// import SockJsClient from 'react-stomp';
 import { Client, Message  } from '@stomp/stompjs';
+import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL } from "../../utils/Constants"
 
 export class Home extends React.Component {
+  sendTweetInterval = null;
+  client = null;
   static propTypes = {
     activeUser: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -22,31 +24,45 @@ export class Home extends React.Component {
     tweets: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
     createTweet: PropTypes.func.isRequired,
   };
-  
-  constructor(props) {
-    super(props);
-  }
 
-  componentDidMount() {
-    console.log('Component did mount');
+  initialQueueSetup(){
     this.client = new Client();
-
     this.client.configure({
-      brokerURL: 'ws://localhost:61616',
+      brokerURL: BROKER_URL,
       connectHeaders: {
-        login: 'admin',
-        passcode: 'admin',
+        login: JMS_USERNAME,
+        passcode: JMS_PASSWORD,
+      },
+      // Helps during debugging, remove in production
+      // debug: (str) => {
+      //   console.log(new Date(), str);
+      // }
+    });
+    this.client.activate();
+  }
+  
+  subscribeFromQueue(queue) {
+    this.client = new Client();
+    this.client.configure({
+      brokerURL: BROKER_URL,
+      connectHeaders: {
+        login: JMS_USERNAME,
+        passcode: JMS_PASSWORD,
       },
       onConnect: () => {
-        console.log('onConnect');
-
-        // this.client.subscribe('/queue/now', message => {
-        //   console.log(message);
-        //   this.setState({serverTime: message.body});
-        // });
-
-        this.client.subscribe('/topic/topic_name', message => {
-          alert(message.body);
+        this.client.subscribe(queue, message => {
+          if (message.body) {
+          const text = JSON.parse(message.body).annotatedImage;
+          const identifiedObject = JSON.parse(message.body).identifiedObject;
+          const tag = JSON.parse(message.body).tag;
+          const {
+            createTweet,
+            activeUser: { id: userId },
+          } = this.props;
+          createTweet({ userId, text, identifiedObject, tag });
+        } else {
+          console.log("Empty message");
+        }
         });
       },
       // Helps during debugging, remove in production
@@ -54,10 +70,14 @@ export class Home extends React.Component {
         console.log(new Date(), str);
       }
     });
-
     this.client.activate();
   }
-  
+
+  componentDidMount() {
+    this.initialQueueSetup();
+    // this.subscribeFromQueue(SUBSCRIBER_QUEUE);
+  }
+
   publishMessage(message) {
     // trying to publish a message when the broker is not connected will throw an exception
     if (!this.client.connected) {
@@ -67,18 +87,22 @@ export class Home extends React.Component {
     if (message.length > 0) {
       const payLoad = {topic: message };
       // You can additionally pass headers
-      this.client.publish({destination: '/streaming-service-heartbeats', body: JSON.stringify(payLoad)});
+      this.client.publish({destination: PUBLISH_QUEUE, body: JSON.stringify(payLoad)});
     }
     return true;
   }
 
   onSubmit = (text) => {
-    this.publishMessage(text)
-    const {
-      createTweet,
-      activeUser: { id: userId },
-    } = this.props;
-    createTweet({ userId, text });
+    // this.publishMessage(text)
+    this.subscribeFromQueue(`${SUBSCRIBER_QUEUE}/${text.replace(" ","_")}`);
+    this.sendTweetInterval = setInterval(() => { this.publishMessage(text) }, 5000);
+  };
+
+  onStop = () => {
+    console.log("Stopped!!!");
+    this.client.unsubscribe();
+    this.initialQueueSetup();
+    clearTimeout(this.sendTweetInterval)
   };
 
   render() {
@@ -88,28 +112,16 @@ export class Home extends React.Component {
       <React.Fragment>
         <Container fluid>
           <Row>
-            <Col xs={3}>
-            {/* <TweetInput onSubmit={this.onSubmit} /> */}
+            <Col xs={4}>
               { this.client &&
-              <TweetInput client={this.client} onSubmit={this.onSubmit} />
+              <TweetInput client={this.client} onSubmit={this.onSubmit} onStop={this.onStop} />
               }
             </Col>
-            <Col>
+            <Col xs={8}>
               <Timeline>
                 {tweets.map((tweet) => (
                   <Tweet {...tweet} key={tweet.id} />
                 ))}
-                {/* <SockJsClient
-                  url="http://localhost:61614/ws"
-                  topics={["/topics/all"]}
-                  debug= {true}
-                  onMessage={(msg) => {
-                    console.log(msg);
-                  }}
-                  ref={(client) => {
-                    this.clientRef = client;
-                  }}
-                /> */}
               </Timeline>
             </Col>
           </Row>
@@ -124,7 +136,6 @@ const mapStateToProps = (state) => ({
   tweets: getAllTweets(state.tweets)
     .map((tweet) => ({
       ...tweet,
-      repliedTweet: getTweetById(state.tweets, tweet.replyToId),
       user: getUserById(state.users, tweet.userId),
     }))
     .sort(sortByDatetime),
