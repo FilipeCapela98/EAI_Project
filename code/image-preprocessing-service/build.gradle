@@ -19,6 +19,8 @@ repositories {
 }
 
 dependencies {
+	implementation project(':commons')
+	implementation 'com.google.code.gson:gson:2.8.6'
 	implementation 'org.springframework.boot:spring-boot-starter-activemq'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
