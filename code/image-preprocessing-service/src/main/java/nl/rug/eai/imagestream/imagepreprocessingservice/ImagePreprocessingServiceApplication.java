@@ -15,16 +15,16 @@ public class ImagePreprocessingServiceApplication {
 		ImagePreprocessingController imagePreprocessingController = applicationContext.getBean(ImagePreprocessingController.class);
 		Gson gson = new Gson();
 
-		FilteredTweetImage[] tweetImages = {new FilteredTweetImage("1","PNG","https://pbs.twimg.com/media/EpOMW12XUAQXnrx.jpg","cat"),
-				new FilteredTweetImage("3","PNG","https://pbs.twimg.com/media/Ep4KOCYUwAI3DVY?format=jpg&name=large","dog")
-				,new FilteredTweetImage("4","PNG","https://pbs.twimg.com/media/EqWLQmgW8AEubu4.jpg","dog"),
-				new FilteredTweetImage("5","PNG","https://pbs.twimg.com/media/EqWLQmgW8AEubu4.png","dog"),
-				new FilteredTweetImage("6","PNG","https://pbs.twimg.com/media/Eowl0bbUwAACm9C?format=gif","dog"),
-				new FilteredTweetImage("7","PNG","https://pbs.twimg.com/media/EpOMW12XUAQXnrx.knn","cat")
-		};
-		for(int i=0;i<tweetImages.length;i++) {
-			imagePreprocessingController.start(gson.toJson(tweetImages[i]));
-		}
+//		FilteredTweetImage[] tweetImages = {new FilteredTweetImage("1","PNG","https://pbs.twimg.com/media/EpOMW12XUAQXnrx.jpg","cat"),
+//				new FilteredTweetImage("3","PNG","https://pbs.twimg.com/media/Ep4KOCYUwAI3DVY?format=jpg&name=large","dog")
+//				,new FilteredTweetImage("4","PNG","https://pbs.twimg.com/media/EqWLQmgW8AEubu4.jpg","dog"),
+//				new FilteredTweetImage("5","PNG","https://pbs.twimg.com/media/EqWLQmgW8AEubu4.png","dog"),
+//				new FilteredTweetImage("6","PNG","https://pbs.twimg.com/media/Eowl0bbUwAACm9C?format=gif","dog"),
+//				new FilteredTweetImage("7","PNG","https://pbs.twimg.com/media/EpOMW12XUAQXnrx.knn","cat")
+//		};
+//		for(int i=0;i<tweetImages.length;i++) {
+//			imagePreprocessingController.start(gson.toJson(tweetImages[i]));
+//		}
 
 	}
 

@@ -1,10 +1,14 @@
 nl/rug/eai/imagestream/commons/model/StopCommand.java
  nl.rug.eai.imagestream.commons.model.StopCommand
-nl/rug/eai/imagestream/commons/model/StartCommand.java
- nl.rug.eai.imagestream.commons.model.StartCommand
 nl/rug/eai/imagestream/commons/model/TweetImage.java
  nl.rug.eai.imagestream.commons.model.TweetImage
 nl/rug/eai/imagestream/commons/model/StreamConsumerHeartbeatEvent.java
  nl.rug.eai.imagestream.commons.model.StreamConsumerHeartbeatEvent
+nl/rug/eai/imagestream/commons/model/FilteredTweetImage.java
+ nl.rug.eai.imagestream.commons.model.FilteredTweetImage
 nl/rug/eai/imagestream/commons/model/StreamProducerHeartbeatEvent.java
  nl.rug.eai.imagestream.commons.model.StreamProducerHeartbeatEvent
+nl/rug/eai/imagestream/commons/model/StartCommand.java
+ nl.rug.eai.imagestream.commons.model.StartCommand
+nl/rug/eai/imagestream/commons/model/AnnotatedImage.java
+ nl.rug.eai.imagestream.commons.model.AnnotatedImage

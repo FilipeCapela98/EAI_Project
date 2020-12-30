@@ -13,7 +13,11 @@ public class ImageDataSender {
     private JmsTemplate jmsTemplate;
 
     public void send(TweetImage tweetImage) {
-        jmsTemplate.convertAndSend("fetched-images-stream", tweetImage);
+        jmsTemplate.convertAndSend("fetched-images-stream", tweetImage,
+                msg -> {
+                    msg.setStringProperty("JMSXGroupID", "streamTopic=" + tweetImage.getTag());
+                    return msg;
+                });
     }
 
 }

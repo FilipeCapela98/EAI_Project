@@ -11,14 +11,6 @@ public class StreamManagementServiceApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(StreamManagementServiceApplication.class, args);
-
-		StartCommandSender sender = context.getBean(StartCommandSender.class);
-		sender.send(new StartCommand("cat"));
-		sender.send(new StartCommand("dog"));
-		sender.send(new StartCommand("beach"));
-		sender.send(new StartCommand("cat"));
-		sender.send(new StartCommand("dog"));
-		sender.send(new StartCommand("beach"));
 	}
 
 }

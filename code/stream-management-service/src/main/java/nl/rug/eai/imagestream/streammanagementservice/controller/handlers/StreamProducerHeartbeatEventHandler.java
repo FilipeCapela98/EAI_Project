@@ -16,6 +16,7 @@ public class StreamProducerHeartbeatEventHandler {
 
     public void handle(StreamProducerHeartbeatEvent producerHeartbeatEvent) {
         String topic = producerHeartbeatEvent.getTopic();
+        log.info("Received producer heartbeat for topic: " + topic);
         this.streamActivityRepositoryManager.refreshProducerActivity(topic);
     }
 

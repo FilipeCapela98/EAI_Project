@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,9 +43,10 @@ public class TwitterStreamingRunner {
 
             // Fetch new images from twitter
             List<TweetMedia> tweetMediaList = getTweetMedia(topic);
+            log.info("Successfully received " + tweetMediaList.size() + " images for topic: " + topic);
 
             // The results should be put in the pipeline queue for further processing
-            tweetMediaList.forEach(this::forwardTweetMedia);
+            tweetMediaList.forEach(tweetMedia -> this.forwardTweetMedia(tweetMedia, topic));
 
             try {
                 //noinspection BusyWait
@@ -58,10 +60,16 @@ public class TwitterStreamingRunner {
     private List<TweetMedia> getTweetMedia(String topic) {
         LocalDateTime previousUpdate = streamController.getLastProcessTime(topic);
         streamController.updateLastProcessTime(topic);
-        return twitterStreamingUtil.fetchNewImages(topic, previousUpdate);
+        try {
+            return twitterStreamingUtil.fetchNewImages(topic, previousUpdate);
+        } catch (Throwable e) {
+            log.error("Something went wrong while fetching data from Twitter API.");
+            streamController.stop(topic);
+            return new ArrayList<>();
+        }
     }
 
-    private void forwardTweetMedia(TweetMedia tweetMedia) {
+    private void forwardTweetMedia(TweetMedia tweetMedia, String topic) {
         // 2 fields can be a URL. Grab the one that is there.
         String url = tweetMedia.getPreview_image_url();
         if (tweetMedia.getUrl() != null)
@@ -72,7 +80,8 @@ public class TwitterStreamingRunner {
             imageDataSender.send(new TweetImage(
                     tweetMedia.getMedia_key(),
                     tweetMedia.getType(),
-                    url
+                    url,
+                    topic
             ));
         }
     }

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.logging.Filter;
+
 @Service
 @Slf4j
 public class ImageAnalyzerRunner {
@@ -19,18 +21,20 @@ public class ImageAnalyzerRunner {
     @Autowired
     ProcessedImageDataSender processedImageDataSender;
 
-    public void run(String topic) {
+    public void run(FilteredTweetImage filteredTweetImage) {
         // Process the images
-        AnnotatedImage annotatedImage = getAnalyzedImage(topic);
+        AnnotatedImage annotatedImage = getAnalyzedImage(filteredTweetImage);
 
         // The results should be put in the pipeline queue for further processing
         forwardAnnotatedImage(annotatedImage);
     }
 
-    private AnnotatedImage getAnalyzedImage(String topic) {
-        Gson gson = new Gson();
-        FilteredTweetImage preprocessedImageData = gson.fromJson(topic, FilteredTweetImage.class);
-        return cloudVisionServiceUtil.processImage(preprocessedImageData.getIdentifier(),preprocessedImageData.getTag(), preprocessedImageData.getUrl());
+    private AnnotatedImage getAnalyzedImage(FilteredTweetImage filteredTweetImage) {
+        return cloudVisionServiceUtil.processImage(
+                filteredTweetImage.getIdentifier(),
+                filteredTweetImage.getTag(),
+                filteredTweetImage.getUrl()
+        );
     }
 
     private void forwardAnnotatedImage(AnnotatedImage annotatedImage) {

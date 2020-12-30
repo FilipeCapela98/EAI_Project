@@ -13,4 +13,5 @@ public class TweetImage {
     private String identifier;
     private String type;
     private String url;
+    private String tag;
 }

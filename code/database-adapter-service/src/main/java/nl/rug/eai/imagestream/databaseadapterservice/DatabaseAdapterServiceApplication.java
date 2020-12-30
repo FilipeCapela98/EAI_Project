@@ -1,6 +1,5 @@
 package nl.rug.eai.imagestream.databaseadapterservice;
 
-import nl.rug.eai.imagestream.databaseadapterservice.controller.ImageJSONController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -10,8 +9,8 @@ public class DatabaseAdapterServiceApplication {
 
 	public static void main(String[] args) {
 		ApplicationContext applicationContext = SpringApplication.run(DatabaseAdapterServiceApplication.class, args);
-		ImageJSONController imageJSONController = applicationContext.getBean(ImageJSONController.class);
-
-		imageJSONController.start("{'hello': 'myname'}");
+//		ImageJSONController imageJSONController = applicationContext.getBean(ImageJSONController.class);
+//
+//		imageJSONController.start("{'hello': 'myname'}");
 	}
 }

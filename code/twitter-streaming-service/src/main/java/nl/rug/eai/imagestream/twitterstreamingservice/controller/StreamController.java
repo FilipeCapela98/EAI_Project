@@ -27,8 +27,6 @@ public class StreamController {
     }
 
     public synchronized void start(String topic) {
-        log.info("Received request to start stream on: " + topic);
-
         if(isRunning(topic)) {
             log.warn("Stream on topic " + topic + " is already running. Not starting another runner.");
             return;
@@ -43,8 +41,6 @@ public class StreamController {
     }
 
     public synchronized void stop(String topic) {
-        log.info("Received request to stop stream on: " + topic);
-
         if(!isRunning(topic)) {
             log.warn("Tried to stop stream on topic " + topic + ", but there was no processor running.");
         }

@@ -24,20 +24,6 @@ public class TwitterStreamingServiceApplication {
 
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(TwitterStreamingServiceApplication.class, args);
-        StreamController twitterApp = applicationContext.getBean(StreamController.class);
-
-        twitterApp.start("cat");
-        twitterApp.start("meme");
-
-        try {
-            Thread.sleep(60 * 1000);
-            twitterApp.stop("meme");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        // twitter.start();
     }
 
     @Bean
