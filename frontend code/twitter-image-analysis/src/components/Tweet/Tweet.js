@@ -10,7 +10,6 @@ import {
   withStyles,
 } from "@material-ui/core";
 import colorFrom from "../../utils/colors";
-import { Base64 } from "js-base64";
 
 
 const styles = (theme) => ({
@@ -53,7 +52,7 @@ const Tweet = ({
     }
     </tbody>
   </table>)
-  const image = Base64.isValid(text) && text.length > 200;
+  const image = text.length > 100;
  
   return (
     <Card

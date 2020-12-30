@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+
+  twitter-vision-frontend:
+    container_name: twitter-vision-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'

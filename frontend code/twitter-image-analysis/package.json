@@ -21,12 +21,12 @@
     "react-markdown": "^3.4.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "1.1.4",
+    "react-scripts": "2.0.0",
     "react-stomp": "^5.0.0",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "typeface-roboto": "^0.0.54",
+    "typeface-roboto": "^1.1.13",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -58,7 +58,6 @@
   "browserslist": {
     "production": [
       ">0.2%",
-      "not dead",
       "not op_mini all"
     ],
     "development": [
