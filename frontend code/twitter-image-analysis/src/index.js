@@ -5,7 +5,7 @@ import Root from './containers/Root';
 import configureStore from './store';
 import registerServiceWorker from './registerServiceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import './index.css'
 import 'typeface-roboto';
 
 const store = configureStore();

@@ -40,9 +40,9 @@ export const Header = ({ classes, isAuthenticated, user, onLogout }) => (
           {user.username[0]}
         </Avatar>
       )}
-      <Typography variant="title" color="inherit" className={classes.flex}>
+      <Typography variant="title" color="inherit" className={classes.flex} style={{fontSize:"xx-large"}}>
         <Link to="/" className={classes.link}>
-          {user ? user.username : 'React Twitter'}
+          {user ? user.username : 'Twitter Vision'}
         </Link>
       </Typography>
       {isAuthenticated ? (
