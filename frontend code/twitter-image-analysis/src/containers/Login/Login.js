@@ -17,7 +17,7 @@ const styles = theme => ({
   },
   textField: {
     marginTop: theme.spacing.unit * 5,
-    marginBottom: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 5,
   },
 });
 
@@ -50,7 +50,7 @@ export class Login extends React.Component {
 
     return (
       <Paper className={classes.paper}>
-        <Typography variant="display1">Login</Typography>
+        <Typography variant="h3" style={{textAlign:"center"}}>Login</Typography>
         <form onSubmit={this.onSubmit}>
           <TextField
             required
@@ -58,11 +58,14 @@ export class Login extends React.Component {
             type="text"
             placeholder="Your username"
             className={classes.textField}
+            style={{width:"100%"}}
             inputRef={ref => (this.input = ref)}
           />
+          <div style={{textAlign:"center", width:"100%"}}>
           <Button variant="outlined" type="submit">
             Sign In
           </Button>
+          </div>
         </form>
       </Paper>
     );

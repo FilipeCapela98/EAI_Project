@@ -61,7 +61,10 @@ class TweetInput extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <Paper className={classes.paper} style={{position:"sticky", top:"100px"}}>
+      <Paper
+        className={classes.paper}
+        style={{ position: "sticky", top: "100px" }}
+      >
         <form onSubmit={this.onSubmit} autoComplete="off">
           <TextField
             required
@@ -73,7 +76,7 @@ class TweetInput extends React.Component {
             disabled={this.state.onStart}
           />
           <Grid container justify="flex-end" spacing={24}>
-            <Grid item>
+            <Grid item style={{ paddingRight: "10px" }}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -87,7 +90,7 @@ class TweetInput extends React.Component {
                 Stop
               </Button>
             </Grid>
-            <Grid item>
+            <Grid item style={{ paddingLeft: "10px" }}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -103,11 +106,25 @@ class TweetInput extends React.Component {
         </form>
         <Row>
           <Col xs={2}>
-        <Loader type="Puff" color="#00BFFF" height={50} width={50} visible={this.state.onStart} />
-        </Col>
-        <Col xs={10}>
-        { this.state.onStart && <Wave text={this.state.showText} effect="stretch" effectChange={1.5} />}
-        </Col>
+            <Loader
+              type="Puff"
+              color="#00BFFF"
+              height={50}
+              width={50}
+              visible={this.state.onStart}
+            />
+          </Col>
+          <Col xs={10} style={{alignSelf:"center"}}>
+            <Row>
+              {this.state.onStart && (
+                <Wave
+                  text={this.state.showText}
+                  effect="stretch"
+                  effectChange={1.5}
+                />
+              )}
+            </Row>
+          </Col>
         </Row>
       </Paper>
     );

@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import Chip from '@material-ui/core/Chip';
+import FaceIcon from '@material-ui/icons/Face';
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -27,6 +29,14 @@ const styles = (theme) => ({
     textDecoration: "none",
     color: theme.palette.primary.dark,
   },
+  root: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(0.5),
+    },
+  },
 });
 
 const Tweet = ({
@@ -39,19 +49,22 @@ const Tweet = ({
   user: { username },
   highlighted,
 }) => {
-  const identifiedObjectJSON = ( <table className="table table-dark table-bordered" style={{width:"50%"}}>
-    <tbody>
-    {identifiedObject &&
-      Object.keys(JSON.parse(identifiedObject)).map((key, i) => {
-        return(
-          <tr key={key}>
-          <td>{key}</td>
-          <td>{JSON.parse(identifiedObject)[key]}</td>
-          </tr>)
-        })
-    }
-    </tbody>
-  </table>)
+  const identifiedObjectJSON = (
+    <div className={classes.root}>
+      {identifiedObject &&
+        Object.keys(JSON.parse(identifiedObject)).map((key, i) => {
+          const labelText = key + "(" + JSON.parse(identifiedObject)[key] + ")";
+          return (
+            <Chip
+              icon={<FaceIcon />}
+              label={labelText}
+              color="primary"
+              variant="outlined"
+            />
+          );
+        })}
+    </div>
+  );
   const image = text.length > 100;
  
   return (
