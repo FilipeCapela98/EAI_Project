@@ -3,15 +3,16 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import TweetInput from "../../components/TweetInput";
 import { logout, getUserById } from "../../modules/users";
-import { createTweet, getTweetById, getAllTweets } from "../../modules/tweets";
+import { createTweet, getAllTweets } from "../../modules/tweets";
 import Tweet from "../../components/Tweet";
 import Timeline from "../../components/Timeline";
 import sortByDatetime from "../../utils/datetime";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Client, Message  } from '@stomp/stompjs';
-import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL, TYPE } from "../../utils/Constants"
+import { Client } from '@stomp/stompjs';
+import { JMS_USERNAME, JMS_PASSWORD, SUBSCRIBER_QUEUE, PUBLISH_QUEUE, BROKER_URL, TYPE } from "../../utils/Constants";
+import no_data from '../../no-data.png';
 
 export class Home extends React.Component {
   sendTweetInterval = null;
@@ -113,15 +114,26 @@ export class Home extends React.Component {
         <Container fluid>
           <Row>
             <Col xs={4}>
-              { this.client &&
-              <TweetInput client={this.client} onSubmit={this.onSubmit} onStop={this.onStop} />
-              }
+              {this.client && (
+                <TweetInput
+                  client={this.client}
+                  onSubmit={this.onSubmit}
+                  onStop={this.onStop}
+                />
+              )}
             </Col>
-            <Col xs={8}>
+            <Col xs={8} >
+            {(!tweets || tweets.length === 0) && 
+            <div style={{ textAlign: "center" }} >
+                  <img
+                    alt="no-data"
+                    src={no_data}
+                  />
+                  </div>
+                }
               <Timeline>
-                {tweets.map((tweet) => (
-                  <Tweet {...tweet} key={tweet.id} />
-                ))}
+                {tweets.length > 0 &&
+                  tweets.map((tweet) => <Tweet {...tweet} key={tweet.id} />)}
               </Timeline>
             </Col>
           </Row>

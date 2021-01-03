@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import Chip from '@material-ui/core/Chip';
 import FaceIcon from '@material-ui/icons/Face';
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -12,6 +12,11 @@ import {
   withStyles,
 } from "@material-ui/core";
 import colorFrom from "../../utils/colors";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faObjectGroup } from '@fortawesome/free-solid-svg-icons';
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 
 const styles = (theme) => ({
@@ -78,27 +83,25 @@ const Tweet = ({
         avatar={
           <Avatar
             style={{
-              backgroundColor: colorFrom(typeof tag !== 'undefined' ? tag : username),
+              backgroundColor: colorFrom(
+                typeof tag !== "undefined" ? tag : username
+              ),
             }}
           >
-            {typeof tag !== 'undefined' ? tag[0] : username[0]}
+            {typeof tag !== "undefined" ? tag[0] : username[0]}
           </Avatar>
         }
-        title={typeof tag !== 'undefined' ? tag : username}
+        title={typeof tag !== "undefined" ? tag : username}
         // subheader={
         //   <Link to={`/tweet/${id}`} className={classes.link}>
         //     {moment(createdAt).fromNow()}
         //   </Link>
         // }
-        subheader={
-          <div>
-            {moment(createdAt).fromNow()}
-          </div>
-        }
+        subheader={<div>{moment(createdAt).fromNow()}</div>}
       />
       {/* <Link to={`/tweet/${id}`} className={classes.link}> */}
       {image && (
-        <div style={{ textAlign: "center", backgroundColor:"lightgray" }}>
+        <div style={{ textAlign: "center" }}>
           <img
             alt="annotated-pic"
             style={{ width: "500px", height: "500px" }}
@@ -107,8 +110,20 @@ const Tweet = ({
         </div>
       )}
       {/* </Link> */}
-      <CardContent className={classes.content} style={{display:"flex", justifyContent:"center"}}>
-          {identifiedObjectJSON}
+      <CardContent
+        className={classes.content}
+        style={{ display: "flex", justifyContent: "center" }}
+      >
+        <Container fluid>
+          <Row>
+            <Col xs={1}>
+              <FontAwesomeIcon icon={faObjectGroup} size="3x" />
+            </Col>
+            <Col xs={10} style={{ display: "flex", justifyContent: "center" }}>
+              {identifiedObjectJSON}
+            </Col>
+          </Row>
+        </Container>
       </CardContent>
     </Card>
   );

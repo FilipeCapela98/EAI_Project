@@ -21,9 +21,6 @@ class TweetInput extends React.Component {
     showText: ''
   };
 
-  constructor(props) {
-    super(props);
-  }
   static propTypes = {
     classes: PropTypes.object.isRequired,
     onSubmit: PropTypes.func,
@@ -75,7 +72,7 @@ class TweetInput extends React.Component {
             inputRef={this.input}
             disabled={this.state.onStart}
           />
-          <Grid container justify="flex-end" spacing={24}>
+          <Grid container justify="flex-end" spacing={10}>
             <Grid item style={{ paddingRight: "10px" }}>
               <Button
                 variant="outlined"
