@@ -19,6 +19,7 @@ public class ProcessedImageDataSender {
             jmsTemplate.convertAndSend("analyzed-images-stream", annotatedImage);
             jmsTemplate.setPubSubDomain(true);
             jmsTemplate.convertAndSend("analyzed-images-stream/" + annotatedImage.getTag().replaceAll(" ","_"), annotatedImage);
+            jmsTemplate.setPubSubDomain(false);
         } catch (Exception e) {
             log.error(e.toString());
         }
