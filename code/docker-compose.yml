@@ -52,3 +52,18 @@ services:
     image: docker.io/library/database-adapter-service:0.0.1-SNAPSHOT
     depends_on:
       - activemq-artemis
+
+  twitter-vision-frontend:
+    container_name: twitter-vision-frontend
+    build:
+      context: ./twitter-image-analysis-frontend
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+    depends_on:
+      - activemq-artemis
+      - stream-management-service
+      - twitter-streaming-service
+      - image-preprocessing-service
+      - image-analyzer-service
+      - database-adapter-service
