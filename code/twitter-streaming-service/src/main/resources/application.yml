@@ -1,0 +1,6 @@
+spring:
+  activemq:
+    broker-url: tcp://activemq-artemis:61616
+    user: admin
+    password: admin
+twitter-streaming-delay-seconds: 15

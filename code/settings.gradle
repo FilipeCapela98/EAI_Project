@@ -1,0 +1,10 @@
+rootProject.name = 'code'
+
+//include(':commons', ':stream-management-service')
+include 'commons'
+include 'stream-management-service'
+include 'twitter-streaming-service'
+include 'image-preprocessing-service'
+include 'image-analyzer-service'
+include 'database-adapter-service'
+

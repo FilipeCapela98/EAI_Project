@@ -2,14 +2,81 @@ version: "3.8"
 services:
 
   # Consul for Service Discovery
-  consul1: &consul
-    image: consul:latest
-    command: "agent -retry-join consul-server-bootstrap -client 0.0.0.0"
-    ports:
-      - "8500:8500"
-      - "8600:8600/udp"
-  consul2:
-    <<: *consul
-  consul3:
-    <<: *consul
+  # consul:
+  #   image: consul:latest
+  #   command: "agent -server -ui -node=server-1 -bootstrap-expect=1 -client 0.0.0.0"
+  #   ports:
+  #     - '8300:8300'
+  #     - '8301:8301'
+  #     - '8301:8301/udp'
+  #     - '8500:8500'
+  #     - '8600:8600'
+  #     - '8600:8600/udp'
 
+  activemq-artemis:
+    image: vromero/activemq-artemis
+    ports:
+      - '8161:8161'
+      - '61616:61616'
+      - '61613:61613'
+      - '61614:61614'
+    environment:
+      - 'ARTEMIS_USERNAME=admin'
+      - 'ARTEMIS_PASSWORD=admin'
+#      - 'TZ=Europe/Amsterdam'
+    volumes:
+      - './override:/var/lib/artemis/etc-override'
+
+  stream-management-service:
+    image: docker.io/library/stream-management-service:0.0.1-SNAPSHOT
+    ports:
+      - '8080:8080'
+    depends_on:
+      - activemq-artemis
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
+
+  twitter-streaming-service:
+    image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
+
+  image-preprocessing-service:
+    image: docker.io/library/image-preprocessing-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
+
+  image-analyzer-service:
+    image: docker.io/library/image-analyzer-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
+
+  database-adapter-service:
+    image: docker.io/library/database-adapter-service:0.0.1-SNAPSHOT
+    depends_on:
+      - activemq-artemis
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
+
+  twitter-vision-frontend:
+    container_name: twitter-vision-frontend
+    build:
+      context: ./twitter-image-analysis-frontend
+      dockerfile: Dockerfile
+    ports:
+      - '80:80'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
+    depends_on:
+      - activemq-artemis
+      - stream-management-service
+      - twitter-streaming-service
+      - image-preprocessing-service
+      - image-analyzer-service
+      - database-adapter-service
