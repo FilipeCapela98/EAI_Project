@@ -17,6 +17,7 @@ import no_data from '../../no-data.png';
 export class Home extends React.Component {
   sendTweetInterval = null;
   client = null;
+  subscriberObject = null;
   static propTypes = {
     activeUser: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -51,7 +52,7 @@ export class Home extends React.Component {
         passcode: JMS_PASSWORD,
       },
       onConnect: () => {
-        this.client.subscribe(queue, message => {
+        this.subscriberObject = this.client.subscribe(queue, message => {
           if (message.body) {
           const text = JSON.parse(message.body).annotatedImage;
           const identifiedObject = JSON.parse(message.body).identifiedObject;
@@ -67,9 +68,9 @@ export class Home extends React.Component {
         });
       },
       // Helps during debugging, remove in production
-      debug: (str) => {
-        console.log(new Date(), str);
-      }
+      // debug: (str) => {
+      //   console.log(new Date(), str);
+      // }
     });
     this.client.activate();
   }
@@ -101,9 +102,12 @@ export class Home extends React.Component {
 
   onStop = () => {
     console.log("Stopped!!!");
-    this.client.unsubscribe();
+    clearTimeout(this.sendTweetInterval);
+    // this.client.unsubscribe();
+    this.subscriberObject.unsubscribe();
+    this.client = null;
+    this.subscriberObject = null;
     this.initialQueueSetup();
-    clearTimeout(this.sendTweetInterval)
   };
 
   render() {

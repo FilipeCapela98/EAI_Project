@@ -23,7 +23,7 @@ services:
     environment:
       - 'ARTEMIS_USERNAME=admin'
       - 'ARTEMIS_PASSWORD=admin'
-      - 'TZ=Europe/Amsterdam'
+#      - 'TZ=Europe/Amsterdam'
     volumes:
       - './override:/var/lib/artemis/etc-override'
 
@@ -33,36 +33,36 @@ services:
       - '8080:8080'
     depends_on:
       - activemq-artemis
-    environment:
-      - 'TZ=Europe/Amsterdam'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
 
   twitter-streaming-service:
     image: docker.io/library/twitter-streaming-service:0.0.1-SNAPSHOT
     depends_on:
       - activemq-artemis
-    environment:
-      - 'TZ=Europe/Amsterdam'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
 
   image-preprocessing-service:
     image: docker.io/library/image-preprocessing-service:0.0.1-SNAPSHOT
     depends_on:
       - activemq-artemis
-    environment:
-      - 'TZ=Europe/Amsterdam'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
 
   image-analyzer-service:
     image: docker.io/library/image-analyzer-service:0.0.1-SNAPSHOT
     depends_on:
       - activemq-artemis
-    environment:
-      - 'TZ=Europe/Amsterdam'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
 
   database-adapter-service:
     image: docker.io/library/database-adapter-service:0.0.1-SNAPSHOT
     depends_on:
       - activemq-artemis
-    environment:
-      - 'TZ=Europe/Amsterdam'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
 
   twitter-vision-frontend:
     container_name: twitter-vision-frontend
@@ -71,8 +71,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '80:80'
-    environment:
-      - 'TZ=Europe/Amsterdam'
+#    environment:
+#      - 'TZ=Europe/Amsterdam'
     depends_on:
       - activemq-artemis
       - stream-management-service
