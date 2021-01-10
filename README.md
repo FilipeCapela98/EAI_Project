@@ -9,10 +9,10 @@ Folder containing all the diagrams used to explain our project in our report.
 Folder that contains the source code of our Spring Boot application.
 
 ### Steps to Run the Application
-Install Docker;
-Open the code folder with IntelliJ;
-Run the bootBuildImage gradle command;
-Run docker-compose up --build;
+Install Docker;\\
+Open the code folder with IntelliJ;\\
+Run the bootBuildImage gradle command;\\
+Run docker-compose up --build;\\
 Navigate to localhost:80 and enjoy our application!\\
 
 Note: Since the project requires a Google Cloud Vision key, a valid key needs to be updated within code\image-analyzer-service\src\main\resources\application.yml to allow for integration with Google Cloud Vision API.
